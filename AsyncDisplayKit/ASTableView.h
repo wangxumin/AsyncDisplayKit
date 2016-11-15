@@ -187,8 +187,16 @@ NS_ASSUME_NONNULL_BEGIN
  */
 - (void)relayoutItems ASDISPLAYNODE_DEPRECATED_MSG("Use ASTableNode method instead.");
 
+/**
+ * Begins a batch update.
+ *
+ * @deprecated This method is deprecated in 2.0. Use @c performBatchUpdates: or performBatchUpdates:completion: instead.
+ */
 - (void)beginUpdates ASDISPLAYNODE_DEPRECATED_MSG("Use ASTableNode's -performBatchUpdates:completion: instead.");
 
+/**
+ * Ends a batch update
+ */
 - (void)endUpdates ASDISPLAYNODE_DEPRECATED_MSG("Use ASTableNode's -performBatchUpdates:completion: instead.");
 
 /**
