@@ -132,6 +132,7 @@
 
 - (void)dealloc
 {
+  NSLog(@"ASCollectionNode dealloc.");
   self.delegate = nil;
   self.dataSource = nil;
 }
