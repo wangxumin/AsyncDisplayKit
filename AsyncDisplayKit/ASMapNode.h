@@ -14,6 +14,9 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
+/**
+ * Annotation options define whether the map's region should change (and how) when annotations are set on the map.
+ */
 typedef NS_OPTIONS(NSUInteger, ASMapNodeShowAnnotationsOptions)
 {
   /** The annotations' positions are ignored, use the region or options specified instead. */

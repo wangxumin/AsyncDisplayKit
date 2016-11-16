@@ -41,12 +41,26 @@ typedef NS_OPTIONS(NSUInteger, ASControlNodeEvent)
   ASControlNodeEventAllEvents         = 0xFFFFFFFF
 };
 
+/**
+  @abstract Control states possible for control nodes.
+  @discussion These states are identical to their UIControl counterparts.
+ */
 typedef NS_OPTIONS(NSUInteger, ASControlState) {
+
+    /** All events, including system events. */
     ASControlStateNormal       = 0,
-    ASControlStateHighlighted  = 1 << 0,                  // used when ASControlNode isHighlighted is set
+  
+    /** Used when ASControlNode isHighlighted is set. */
+    ASControlStateHighlighted  = 1 << 0,
+  
+    /** Used when ASControlNode isEnabled is disabled. */
     ASControlStateDisabled     = 1 << 1,
-    ASControlStateSelected     = 1 << 2,                  // used when ASControlNode isSelected is set
-    ASControlStateReserved     = 0xFF000000               // flags reserved for internal framework use
+  
+    /** Used when ASControlNode isSelected is set. */
+    ASControlStateSelected     = 1 << 2,
+  
+    /** Flags reserved for internal framework use. */
+    ASControlStateReserved     = 0xFF000000
 };
 
 /**

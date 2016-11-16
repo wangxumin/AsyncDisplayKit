@@ -28,7 +28,9 @@ extern CGSize const ASLayoutElementParentSizeUndefined;
 
 /** Type of ASLayoutElement  */
 typedef NS_ENUM(NSUInteger, ASLayoutElementType) {
+  /** All ASLayoutSpecs and subclasses */
   ASLayoutElementTypeLayoutSpec,
+  /** All ASDisplayNodes and subclasses */
   ASLayoutElementTypeDisplayNode
 };
 

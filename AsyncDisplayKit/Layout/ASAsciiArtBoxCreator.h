@@ -42,6 +42,9 @@ NS_ASSUME_NONNULL_BEGIN
  *  ------------ASStackLayoutSpec-----------
  *  |  ASTextNode  ASTextNode  ASTextNode  |
  *  ----------------------------------------
+ *
+ *  @param children child(ren) ASLayoutElement(s)
+ *  @param parent parent ASLayoutElement
  */
 + (NSString *)horizontalBoxStringForChildren:(NSArray<NSString *> *)children parent:(NSString *)parent;
 
@@ -53,6 +56,9 @@ NS_ASSUME_NONNULL_BEGIN
  *   |     ASTextNode    |
  *   |     ASTextNode    |
  *   ---------------------
+ *
+ *  @param children child(ren) ASLayoutElement(s)
+ *  @param parent parent ASLayoutElement
  */
 + (NSString *)verticalBoxStringForChildren:(NSArray<NSString *> *)children parent:(NSString *)parent;
 

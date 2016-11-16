@@ -12,20 +12,17 @@
 
 #if TARGET_OS_IOS
 #import <AsyncDisplayKit/AsyncDisplayKit.h>
-//#import <AsyncDisplayKit/ASThread.h>
-//#import <AsyncDisplayKit/ASVideoNode.h>
-//#import <AsyncDisplayKit/ASDisplayNode+Subclasses.h>
 
 @class AVAsset;
 @protocol ASVideoPlayerNodeDelegate;
 
-typedef enum {
-  ASVideoPlayerNodeControlTypePlaybackButton,
+typedef NS_ENUM(NSUInteger, ASVideoPlayerNodeControlType) {
+  ASVideoPlayerNodeControlTypePlaybackButton = 0,
   ASVideoPlayerNodeControlTypeElapsedText,
   ASVideoPlayerNodeControlTypeDurationText,
   ASVideoPlayerNodeControlTypeScrubber,
   ASVideoPlayerNodeControlTypeFlexGrowSpacer,
-} ASVideoPlayerNodeControlType;
+};
 
 NS_ASSUME_NONNULL_BEGIN
 

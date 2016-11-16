@@ -35,7 +35,13 @@ ASDISPLAYNODE_EXTERN_C_END
  * Bitmask to indicate what performance measurements the cell should record.
  */
 typedef NS_OPTIONS(NSUInteger, ASDisplayNodePerformanceMeasurementOptions) {
+  /**
+   * Record layout spec number of passes & total time
+   */
   ASDisplayNodePerformanceMeasurementOptionLayoutSpec = 1 << 0,
+  /**
+   * Record layout computation number of passes & total time
+   */
   ASDisplayNodePerformanceMeasurementOptionLayoutComputation = 1 << 1
 };
 

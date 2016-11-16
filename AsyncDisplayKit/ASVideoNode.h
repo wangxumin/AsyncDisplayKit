@@ -15,8 +15,8 @@
 @class AVAsset, AVPlayer, AVPlayerLayer, AVPlayerItem, AVVideoComposition, AVAudioMix;
 @protocol ASVideoNodeDelegate;
 
-typedef enum {
-  ASVideoNodePlayerStateUnknown,
+typedef NS_ENUM(NSUInteger, ASVideoNodePlayerState) {
+  ASVideoNodePlayerStateUnknown = 0,
   ASVideoNodePlayerStateInitialLoading,
   ASVideoNodePlayerStateReadyToPlay,
   ASVideoNodePlayerStatePlaybackLikelyToKeepUpButNotPlaying,
@@ -24,7 +24,7 @@ typedef enum {
   ASVideoNodePlayerStateLoading,
   ASVideoNodePlayerStatePaused,
   ASVideoNodePlayerStateFinished
-} ASVideoNodePlayerState;
+};
 
 NS_ASSUME_NONNULL_BEGIN
 

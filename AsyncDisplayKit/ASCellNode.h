@@ -16,6 +16,9 @@ NS_ASSUME_NONNULL_BEGIN
 
 typedef NSUInteger ASCellNodeAnimation;
 
+/**
+ * Visibility event defines certain events related to the visbility of an ASCellNode.
+*/
 typedef NS_ENUM(NSUInteger, ASCellNodeVisibilityEvent) {
   /**
    * Indicates a cell has just became visible
