@@ -23,6 +23,9 @@ typedef NS_ENUM(NSInteger, ASButtonNodeImageAlignment) {
   ASButtonNodeImageAlignmentEnd
 };
 
+/**
+ Subclass of ASControlNode. Similar to UIKit's UIButton.
+ */
 @interface ASButtonNode : ASControlNode
 
 @property (nonatomic, readonly) ASTextNode  * titleNode;
