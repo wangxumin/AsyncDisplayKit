@@ -62,9 +62,6 @@ NS_ASSUME_NONNULL_BEGIN
  * @param rangeType The range type to get the tuning parameters for.
  *
  * @return A tuning parameter value for the given range type in full mode.
- *
- * @see ASLayoutRangeMode
- * @see ASLayoutRangeType
  */
 - (ASRangeTuningParameters)tuningParametersForRangeType:(ASLayoutRangeType)rangeType AS_WARN_UNUSED_RESULT;
 
@@ -73,9 +70,6 @@ NS_ASSUME_NONNULL_BEGIN
  *
  * @param tuningParameters The tuning parameters to store for a range type.
  * @param rangeType The range type to set the tuning parameters for.
- *
- * @see ASLayoutRangeMode
- * @see ASLayoutRangeType
  */
 - (void)setTuningParameters:(ASRangeTuningParameters)tuningParameters forRangeType:(ASLayoutRangeType)rangeType;
 
@@ -86,9 +80,6 @@ NS_ASSUME_NONNULL_BEGIN
  * @param rangeType The range type to get the tuning parameters for.
  *
  * @return A tuning parameter value for the given range type in the given mode.
- *
- * @see ASLayoutRangeMode
- * @see ASLayoutRangeType
  */
 - (ASRangeTuningParameters)tuningParametersForRangeMode:(ASLayoutRangeMode)rangeMode rangeType:(ASLayoutRangeType)rangeType AS_WARN_UNUSED_RESULT;
 
@@ -98,9 +89,6 @@ NS_ASSUME_NONNULL_BEGIN
  * @param tuningParameters The tuning parameters to store for a range type.
  * @param rangeMode The range mode to set the running parameters for.
  * @param rangeType The range type to set the tuning parameters for.
- *
- * @see ASLayoutRangeMode
- * @see ASLayoutRangeType
  */
 - (void)setTuningParameters:(ASRangeTuningParameters)tuningParameters forRangeMode:(ASLayoutRangeMode)rangeMode rangeType:(ASLayoutRangeType)rangeType;
 
@@ -414,15 +402,11 @@ NS_ASSUME_NONNULL_BEGIN
 
 /**
  * Asks the data source for the number of sections in the table node.
- *
- * @see @c numberOfSectionsInTableView:
  */
 - (NSInteger)numberOfSectionsInTableNode:(ASTableNode *)tableNode;
 
 /**
  * Asks the data source for the number of rows in the given section of the table node.
- *
- * @see @c numberOfSectionsInTableView:
  */
 - (NSInteger)tableNode:(ASTableNode *)tableNode numberOfRowsInSection:(NSInteger)section;
 

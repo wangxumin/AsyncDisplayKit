@@ -82,9 +82,6 @@ NS_ASSUME_NONNULL_BEGIN
  * @param rangeType The range type to get the tuning parameters for.
  *
  * @return A tuning parameter value for the given range type in full mode.
- *
- * @see ASLayoutRangeMode
- * @see ASLayoutRangeType
  */
 - (ASRangeTuningParameters)tuningParametersForRangeType:(ASLayoutRangeType)rangeType AS_WARN_UNUSED_RESULT ASDISPLAYNODE_DEPRECATED_MSG("Use ASTableNode method instead.");
 
@@ -93,9 +90,6 @@ NS_ASSUME_NONNULL_BEGIN
  *
  * @param tuningParameters The tuning parameters to store for a range type.
  * @param rangeType The range type to set the tuning parameters for.
- *
- * @see ASLayoutRangeMode
- * @see ASLayoutRangeType
  */
 - (void)setTuningParameters:(ASRangeTuningParameters)tuningParameters forRangeType:(ASLayoutRangeType)rangeType ASDISPLAYNODE_DEPRECATED_MSG("Use ASTableNode method instead.");
 
@@ -106,9 +100,6 @@ NS_ASSUME_NONNULL_BEGIN
  * @param rangeType The range type to get the tuning parameters for.
  *
  * @return A tuning parameter value for the given range type in the given mode.
- *
- * @see ASLayoutRangeMode
- * @see ASLayoutRangeType
  */
 - (ASRangeTuningParameters)tuningParametersForRangeMode:(ASLayoutRangeMode)rangeMode rangeType:(ASLayoutRangeType)rangeType AS_WARN_UNUSED_RESULT ASDISPLAYNODE_DEPRECATED_MSG("Use ASTableNode method instead.");
 
@@ -118,9 +109,6 @@ NS_ASSUME_NONNULL_BEGIN
  * @param tuningParameters The tuning parameters to store for a range type.
  * @param rangeMode The range mode to set the running parameters for.
  * @param rangeType The range type to set the tuning parameters for.
- *
- * @see ASLayoutRangeMode
- * @see ASLayoutRangeType
  */
 - (void)setTuningParameters:(ASRangeTuningParameters)tuningParameters forRangeMode:(ASLayoutRangeMode)rangeMode rangeType:(ASLayoutRangeType)rangeType ASDISPLAYNODE_DEPRECATED_MSG("Use ASTableNode method instead.");
 

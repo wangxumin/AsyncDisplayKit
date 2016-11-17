@@ -224,21 +224,21 @@ extern NSInteger const ASDefaultDrawingPriority;
 /**
  * Returns YES if the node is – at least partially – visible in a window.
  *
- * @see didEnterVisibleState and didExitVisibleState
+ * @see [ASDisplayNode(Subclassing) didEnterVisibleState] and [ASDisplayNode(Subclassing) didExitVisibleState]
  */
 @property (readonly, getter=isVisible) BOOL visible;
 
 /**
  * Returns YES if the node is in the preloading interface state.
  *
- * @see didEnterPreloadState and didExitPreloadState
+ * @see [ASDisplayNode(Subclassing) didEnterPreloadState] and [ASDisplayNode(Subclassing) didExitPreloadState]
  */
 @property (readonly, getter=isInPreloadState) BOOL inPreloadState;
 
 /**
  * Returns YES if the node is in the displaying interface state.
  *
- * @see didEnterDisplayState and didExitDisplayState
+ * @see @see [ASDisplayNode(Subclassing) didEnterDisplayState] and [ASDisplayNode(Subclassing) didExitDisplayState]
  */
 @property (readonly, getter=isInDisplayState) BOOL inDisplayState;
 

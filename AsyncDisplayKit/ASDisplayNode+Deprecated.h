@@ -60,6 +60,8 @@ ASLayoutElementStyleForwardingDeclaration
 /**
  * @abstract Called whenever the visiblity of the node changed.
  *
+ * @param isVisible The BOOL specifiying whether the node is visible (YES) or not (NO).
+ *
  * @discussion Subclasses may use this to monitor when they become visible.
  *
  * @deprecated @see didEnterVisibleState @see didExitVisibleState
@@ -69,6 +71,8 @@ ASLayoutElementStyleForwardingDeclaration
 /**
  * @abstract Called whenever the visiblity of the node changed.
  *
+ * @param isVisible The BOOL specifiying whether the node is visible (YES) or not (NO).
+ *
  * @discussion Subclasses may use this to monitor when they become visible.
  *
  * @deprecated @see didEnterVisibleState @see didExitVisibleState
@@ -77,6 +81,8 @@ ASLayoutElementStyleForwardingDeclaration
 
 /**
  * @abstract Called whenever the the node has entered or exited the display state.
+ *
+ * @param inDisplayState The BOOL specifiying whether the node is in the display state (YES) or not (NO).
  *
  * @discussion Subclasses may use this to monitor when a node should be rendering its content.
  *
@@ -88,6 +94,8 @@ ASLayoutElementStyleForwardingDeclaration
 
 /**
  * @abstract Called whenever the the node has entered or left the load state.
+ *
+ * @param inLoadState The BOOL specifiying whether the node is in the preload state (YES) or not (NO).
  *
  * @discussion Subclasses may use this to monitor data for a node should be loaded, either from a local or remote source.
  *

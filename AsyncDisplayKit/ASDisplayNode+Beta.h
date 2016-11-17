@@ -69,7 +69,6 @@ typedef struct {
 
 /**
  * @abstract Recursively ensures node and all subnodes are displayed.
- * @see Full documentation in ASDisplayNode+FrameworkPrivate.h
  */
 - (void)recursivelyEnsureDisplaySynchronously:(BOOL)synchronously;
 
