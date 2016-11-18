@@ -471,8 +471,9 @@ static ASDisplayNodeMethodOverrides GetASDisplayNodeMethodOverrides(Class c)
 
   // Unwrap the ivar array
   unsigned int count = 0;
-  int scanResult = sscanf(ivarsObj.objCType, "[%u^{objc_ivar}]", &count);
-  NSAssert(scanResult, @"Unexpected type in NSValue: %s", ivarsObj.objCType);
+  // Will be unused if assertions are disabled.
+  __unused int scanResult = sscanf(ivarsObj.objCType, "[%u^{objc_ivar}]", &count);
+  ASDisplayNodeAssert(scanResult == 1, @"Unexpected type in NSValue: %s", ivarsObj.objCType);
   Ivar ivars[count];
   [ivarsObj getValue:ivars];
 
@@ -517,8 +518,9 @@ static ASDisplayNodeMethodOverrides GetASDisplayNodeMethodOverrides(Class c)
     NSValue *ivarsObj = [c _ivarsThatMayNeedMainDeallocation];
     // Unwrap the ivar array and append it to our working array
     unsigned int count = 0;
-    int scanResult = sscanf(ivarsObj.objCType, "[%u^{objc_ivar}]", &count);
-    NSAssert(scanResult, @"Unexpected type in NSValue: %s", ivarsObj.objCType);
+    // Will be unused if assertions are disabled.
+    __unused int scanResult = sscanf(ivarsObj.objCType, "[%u^{objc_ivar}]", &count);
+    ASDisplayNodeAssert(scanResult == 1, @"Unexpected type in NSValue: %s", ivarsObj.objCType);
     ASDisplayNodeCAssert(resultCount + count < kMaxDealloc2MainIvarsPerClassTree, @"More than %d dealloc2main ivars are not supported. Count: %d", kMaxDealloc2MainIvarsPerClassTree, resultCount + count);
     [ivarsObj getValue:resultIvars + resultCount];
     resultCount += count;
