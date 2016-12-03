@@ -116,6 +116,11 @@ static NSMutableSet *__cellClassesForVisibilityNotifications = nil; // See +init
       [self layoutThatFits:constrainedSize];
       ASDisplayNodeLogEvent(self, @"Finished async measure");
     });
+
+    // UIKit may have already run a layout pass on us (during UICollectionView.performBatchUpdates) when
+    // we got inserted. At that time we were not in the preload state and had not enqueued this measurement.
+    // Trigger another layout pass before first frame is drawn.
+    [self setNeedsLayout];
   }
 }
 
@@ -137,7 +142,22 @@ static NSMutableSet *__cellClassesForVisibilityNotifications = nil; // See +init
  */
 - (void)__layout
 {
-  dispatch_group_wait(_firstLayoutGroup, DISPATCH_TIME_FOREVER);
+  // If UIKit comes in with a layout pass, but we haven't already computed our layout,
+  // then there are two possibilities:
+  // - We are at the very beginning, e.g. inside UICollectionView.performBatchUpdates
+  //  where we are inserted, and the range controller hasn't gotten a change to update
+  //  our interface state. We need to skip this layout pass, because we want to layout
+  //  concurrently in response to entering the fetch range. In didEnterPreloadState, we will
+  //  call -setNeedsLayout on self and trigger another layout pass before the first frame is drawn.
+  // - We are now in the preload range, and we just need to wait for that first measurement to
+  //  finish before proceeding.
+  if (self.calculatedLayout == nil) {
+    if (self.inPreloadState) {
+      dispatch_group_wait(_firstLayoutGroup, DISPATCH_TIME_FOREVER);
+    } else {
+      return;
+    }
+  }
   [super __layout];
 }
 

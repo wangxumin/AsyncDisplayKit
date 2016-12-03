@@ -935,7 +935,7 @@
         _XCTRegisterFailure(test, @"constrainedSize is fixed", @"Expected fixed constrained size during this test. Got: %@", NSStringFromASSizeRange(constrainedSize));
       }
       if (ASDisplayNodeThreadIsMain()) {
-        _XCTRegisterFailure(test, @"layoutsAreOffMain", @"Expected no main-thread layouts.");
+        _XCTRegisterFailure(test, @"all layouts are off main thread", @"Expected no main-thread layouts.");
       }
       [lock lock];
         [laidoutNodes addObject:self];
