@@ -25,7 +25,7 @@ ASDISPLAYNODE_INLINE BOOL AS_WARN_UNUSED_RESULT ASIsCGSizeValidForLayout(CGSize 
 
 ASDISPLAYNODE_INLINE BOOL AS_WARN_UNUSED_RESULT ASPointsValidForSize(CGFloat points)
 {
-    return ((isnormal(points) || points == 0.0) && points >= 0.0 && points < (CGFLOAT_MAX / 2.0));
+    return ((isnormal(points) || points == 0.0) && points >= 0.0 && points < (FLT_MAX / 2.0));
 }
 
 ASDISPLAYNODE_INLINE BOOL AS_WARN_UNUSED_RESULT ASIsCGSizeValidForSize(CGSize size)
