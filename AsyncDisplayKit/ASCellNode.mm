@@ -109,6 +109,15 @@ static NSMutableSet *__cellClassesForVisibilityNotifications = nil; // See +init
 - (void)didEnterPreloadState
 {
   [super didEnterPreloadState];
+
+  /**
+   * If our constrained size was fixed when we were inserted, the data controller skipped laying us out
+   * to save time. If that's the case, we will now enqueue a layout in the background.
+   * If UIKit comes in for a layout pass, we will wait for this to finish.
+   * If we are about to display, we will force a layout pass (which will wait for this to finish).
+   * Note that our initial frame will match this constrained size – the data controller will do that much
+   * for us.
+   */
   if (self.calculatedLayout == nil) {
     ASSizeRange constrainedSize = [_interactionDelegate constrainedSizeForCellNode:self];
     ASDisplayNodeLogEvent(self, @"Enqueued async measure");
@@ -130,8 +139,7 @@ static NSMutableSet *__cellClassesForVisibilityNotifications = nil; // See +init
 
   // If display is about to start, ensure we are measured and that the layout is applied.
   // Otherwise we may render at the wrong size!
-  dispatch_group_wait(_firstLayoutGroup, DISPATCH_TIME_FOREVER);
-  [self layout];
+  [self __layout];
 }
 
 /**

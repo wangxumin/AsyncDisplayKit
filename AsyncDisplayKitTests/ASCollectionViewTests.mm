@@ -975,6 +975,7 @@
   }] evaluatedWithObject:(id)kCFNull handler:nil];
   [self waitForExpectationsWithTimeout:3 handler:nil];
   [ASCellNode deswizzleAllMethods];
+  [[NSRunLoop mainRunLoop] runUntilDate:[NSDate dateWithTimeIntervalSinceNow:10]];
 }
 
 @end
