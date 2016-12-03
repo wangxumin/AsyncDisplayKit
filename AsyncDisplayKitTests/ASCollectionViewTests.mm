@@ -173,16 +173,29 @@
     self.asyncDelegate = [[ASCollectionViewTestDelegate alloc] initWithNumberOfSections:10 numberOfItemsInSection:10];
     id realLayout = [UICollectionViewFlowLayout new];
     id mockLayout = [OCMockObject partialMockForObject:realLayout];
-    self.collectionNode = [[ASCollectionNode alloc] initWithFrame:self.view.bounds collectionViewLayout:mockLayout];
-    self.collectionView = self.collectionNode.view;
-    self.collectionView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
-    self.collectionNode.dataSource = self.asyncDelegate;
-    self.collectionNode.delegate = self.asyncDelegate;
+    self.collectionNode = [[ASCollectionNode alloc] initWithCollectionViewLayout:mockLayout];
     
     [self.collectionNode registerSupplementaryNodeOfKind:UICollectionElementKindSectionHeader];
-    [self.view addSubview:self.collectionView];
+    // NOTE: Avoid connecting delegate/dataSource until viewDidLoad so that the test case can configure it
+    // and avoid selector checking.
   }
   return self;
+}
+
+- (ASCollectionView *)collectionView
+{
+  return self.collectionNode.view;
+}
+
+- (void)viewDidLoad
+{
+  [super viewDidLoad];
+
+  self.collectionView.frame = self.view.bounds;
+  self.collectionView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
+  [self.view addSubview:self.collectionView];
+  self.collectionNode.dataSource = self.asyncDelegate;
+  self.collectionNode.delegate = self.asyncDelegate;
 }
 
 @end
@@ -913,13 +926,18 @@
   testController.asyncDelegate.constrainedSizeForItem = ^(NSIndexPath *indexPath) {
     return ASSizeRangeMake(CGSizeMake(100, 100));
   };
-  NSMutableArray<NSThread *> *layoutThreads = [NSMutableArray array];
-  NSMutableArray<ASCellNode *> *laidoutNodes = [NSMutableArray array];
+  NSMutableSet<ASCellNode *> *laidoutNodes = [NSMutableSet set];
   NSLock *lock = [[NSLock alloc] init];
+  XCTestCase *test = self;
   [ASTextCellNodeWithSetSelectedCounter swizzleInstanceMethod:@selector(layoutSpecThatFits:) withReplacement:JGMethodReplacementProviderBlock {
     return JGMethodReplacement(ASLayoutSpec *, ASTextCellNodeWithSetSelectedCounter *, ASSizeRange constrainedSize) {
+      if (ASSizeRangeIsExactValidLayoutSize(constrainedSize) == NO) {
+        _XCTRegisterFailure(test, @"constrainedSize is fixed", @"Expected fixed constrained size during this test. Got: %@", NSStringFromASSizeRange(constrainedSize));
+      }
+      if (ASDisplayNodeThreadIsMain()) {
+        _XCTRegisterFailure(test, @"layoutsAreOffMain", @"Expected no main-thread layouts.");
+      }
       [lock lock];
-        [layoutThreads addObject:[NSThread currentThread]];
         [laidoutNodes addObject:self];
       [lock unlock];
       return JGOriginalImplementation(ASLayoutSpec *, constrainedSize);
@@ -934,7 +952,7 @@
   ASCollectionNode *cn = testController.collectionNode;
   [cn waitUntilAllUpdatesAreCommitted];
 
-  NSMutableArray<ASCellNode *> *fetchDataNodes = [NSMutableArray array];
+  NSMutableSet<ASCellNode *> *fetchDataNodes = [NSMutableSet set];
   for (NSInteger s = 0; s < cn.numberOfSections; s++) {
     NSInteger c = [cn numberOfItemsInSection:s];
     for (NSInteger i = 0; i < c; i++) {
@@ -944,7 +962,12 @@
       }
     }
   }
-  [self expectationForPredicate:[NSPredicate predicateWithFormat:@"self = %@", fetchDataNodes] evaluatedWithObject:laidoutNodes handler:nil];
+  [self expectationForPredicate:[NSPredicate predicateWithBlock:^BOOL(id  _Nonnull evaluatedObject, NSDictionary<NSString *,id> * _Nullable bindings) {
+    [lock lock];
+    BOOL result = [laidoutNodes isEqualToSet:fetchDataNodes];
+    [lock unlock];
+    return result;
+  }] evaluatedWithObject:(id)kCFNull handler:nil];
   [self waitForExpectationsWithTimeout:3 handler:nil];
   [ASCellNode deswizzleAllMethods];
 }

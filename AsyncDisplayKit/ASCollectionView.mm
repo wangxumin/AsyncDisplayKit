@@ -805,6 +805,13 @@ static NSString * const kCellReuseIdentifier = @"_ASCollectionViewCell";
 
 - (CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout sizeForItemAtIndexPath:(NSIndexPath *)indexPath
 {
+  // If the item has a fixed size, just return that.
+  // TODO: Pull the constrained size from the ASIndexedNodeContext
+  ASSizeRange constrainedSize = [self.layoutInspector collectionView:self constrainedSizeForNodeAtIndexPath:indexPath];
+  if (ASSizeRangeIsExactValidLayoutSize(constrainedSize)) {
+    return constrainedSize.min;
+  }
+
   return [[self nodeForItemAtIndexPath:indexPath] calculatedSize];
 }
 
@@ -1680,6 +1687,11 @@ static NSString * const kCellReuseIdentifier = @"_ASCollectionViewCell";
   }
   
   _nextLayoutInvalidationStyle = invalidationStyle;
+}
+
+- (ASSizeRange)constrainedSizeForCellNode:(ASCellNode *)cellNode
+{
+  return [self dataController:_dataController constrainedSizeForNodeAtIndexPath:cellNode.indexPath];
 }
 
 #pragma mark - _ASDisplayView behavior substitutions

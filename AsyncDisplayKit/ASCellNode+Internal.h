@@ -29,6 +29,13 @@ NS_ASSUME_NONNULL_BEGIN
  */
 - (void)nodeDidRelayout:(ASCellNode *)node sizeChanged:(BOOL)sizeChanged;
 
+/**
+ * Asks the delegate for the appropriate constrained size for measuring this cell
+ * node. If the cell node is not already measured when it enters the fetch data range,
+ * it will call this method on the main thread and start an asynchronous measurement pass.
+ */
+- (ASSizeRange)constrainedSizeForCellNode:(ASCellNode *)cellNode;
+
 /*
  * Methods to be called whenever the selection or highlight state changes
  * on ASCellNode. UIKit internally stores these values to update reusable cells.

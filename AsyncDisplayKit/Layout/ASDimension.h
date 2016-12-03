@@ -25,7 +25,7 @@ ASDISPLAYNODE_INLINE BOOL AS_WARN_UNUSED_RESULT ASIsCGSizeValidForLayout(CGSize 
 
 ASDISPLAYNODE_INLINE BOOL AS_WARN_UNUSED_RESULT ASPointsValidForSize(CGFloat points)
 {
-    return ((isnormal(points) || points == 0.0) && points >= 0.0 && points < (FLT_MAX / 2.0));
+    return ((isnormal(points) || points == 0.0) && points >= 0.0 && points < (CGFLOAT_MAX / 2.0));
 }
 
 ASDISPLAYNODE_INLINE BOOL AS_WARN_UNUSED_RESULT ASIsCGSizeValidForSize(CGSize size)
@@ -265,6 +265,16 @@ extern AS_WARN_UNUSED_RESULT ASSizeRange ASSizeRangeIntersect(ASSizeRange sizeRa
 ASDISPLAYNODE_INLINE AS_WARN_UNUSED_RESULT BOOL ASSizeRangeEqualToSizeRange(ASSizeRange lhs, ASSizeRange rhs)
 {
   return CGSizeEqualToSize(lhs.min, rhs.min) && CGSizeEqualToSize(lhs.max, rhs.max);
+}
+
+/**
+ * Returns whether this size range represents an exact CGSize that is valid for layout.
+ * If this returns YES, you can use .min or .max to get the underlying valid CGSize.
+ */
+ASDISPLAYNODE_INLINE AS_WARN_UNUSED_RESULT BOOL ASSizeRangeIsExactValidLayoutSize(ASSizeRange sizeRange)
+{
+  CGSize minSize = sizeRange.min;
+  return ASIsCGSizeValidForLayout(minSize) && CGSizeEqualToSize(minSize, sizeRange.max);
 }
 
 /**

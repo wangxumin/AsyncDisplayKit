@@ -1577,7 +1577,7 @@ static ASDisplayNodeMethodOverrides GetASDisplayNodeMethodOverrides(Class c)
   ASDN::MutexLocker l(__instanceLock__);
   CGRect bounds = _threadSafeBounds;
   
-  if (CGRectEqualToRect(bounds, CGRectZero)) {
+  if (CGRectIsEmpty(bounds)) {
     // Performing layout on a zero-bounds view often results in frame calculations
     // with negative sizes after applying margins, which will cause
     // measureWithSizeRange: on subnodes to assert.

@@ -775,6 +775,13 @@ static NSString * const kCellReuseIdentifier = @"_ASTableViewCell";
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
+  // If the item has a fixed size, just return that.
+  // TODO: Pull the constrained size from the ASIndexedNodeContext
+  ASSizeRange constrainedSize = [self dataController:_dataController constrainedSizeForNodeAtIndexPath:indexPath];
+  if (ASSizeRangeIsExactValidLayoutSize(constrainedSize)) {
+    return constrainedSize.min.height;
+  }
+  
   ASCellNode *node = [_dataController nodeAtIndexPath:indexPath];
   return node.calculatedSize.height;
 }
@@ -1636,6 +1643,11 @@ static NSString * const kCellReuseIdentifier = @"_ASTableViewCell";
              withObject:nil
              afterDelay:0
                 inModes:@[ NSRunLoopCommonModes ]];
+}
+
+- (ASSizeRange)constrainedSizeForCellNode:(ASCellNode *)cellNode
+{
+  return [self dataController:_dataController constrainedSizeForNodeAtIndexPath:cellNode.indexPath];
 }
 
 // Cause UITableView to requery for the new height of this node

@@ -36,6 +36,7 @@
   ASDisplayNode *_viewControllerNode;
   UIViewController *_viewController;
   BOOL _suspendInteractionDelegate;
+  dispatch_group_t _firstLayoutGroup;
 
   struct {
     unsigned int isTableNode:1;
@@ -57,6 +58,7 @@ static NSMutableSet *__cellClassesForVisibilityNotifications = nil; // See +init
 
   // Use UITableViewCell defaults
   _selectionStyle = UITableViewCellSelectionStyleDefault;
+  _firstLayoutGroup = dispatch_group_create();
   self.clipsToBounds = YES;
 
   return self;
@@ -102,6 +104,41 @@ static NSMutableSet *__cellClassesForVisibilityNotifications = nil; // See +init
       _viewControllerDidLoadBlock = nil;
     }
   }
+}
+
+- (void)didEnterPreloadState
+{
+  [super didEnterPreloadState];
+  if (self.calculatedLayout == nil) {
+    ASSizeRange constrainedSize = [_interactionDelegate constrainedSizeForCellNode:self];
+    ASDisplayNodeLogEvent(self, @"Enqueued async measure");
+    dispatch_group_async(_firstLayoutGroup, dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+      [self layoutThatFits:constrainedSize];
+      ASDisplayNodeLogEvent(self, @"Finished async measure");
+    });
+  }
+}
+
+- (void)displayWillStart
+{
+  [super displayWillStart];
+
+  // If display is about to start, ensure we are measured and that the layout is applied.
+  // Otherwise we may render at the wrong size!
+  dispatch_group_wait(_firstLayoutGroup, DISPATCH_TIME_FOREVER);
+  [self layout];
+}
+
+/**
+ * It sucks to override this, but we have to ensure our
+ * async measurement is done before super __layout
+ * because once we're in there, ASDisplayNode will measure
+ * itself (on main!) if the measurement isn't done.
+ */
+- (void)__layout
+{
+  dispatch_group_wait(_firstLayoutGroup, DISPATCH_TIME_FOREVER);
+  [super __layout];
 }
 
 - (void)layout

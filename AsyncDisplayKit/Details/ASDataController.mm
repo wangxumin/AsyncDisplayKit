@@ -161,7 +161,7 @@ NSString * const ASCollectionInvalidUpdateException = @"ASCollectionInvalidUpdat
   for (NSUInteger i = 0; i < count; i += blockSize) {
     NSRange batchedRange = NSMakeRange(i, MIN(count - i, blockSize));
     NSArray<ASIndexedNodeContext *> *batchedContexts = [contexts subarrayWithRange:batchedRange];
-    NSArray *nodes = [self _layoutNodesFromContexts:batchedContexts];
+    NSArray *nodes = [self _layoutNodesAsNeededFromContexts:batchedContexts];
     NSArray *indexPaths = [ASIndexedNodeContext indexPathsFromContexts:batchedContexts];
     batchCompletionHandler(nodes, indexPaths);
   }
@@ -175,7 +175,11 @@ NSString * const ASCollectionInvalidUpdateException = @"ASCollectionInvalidUpdat
 - (void)_layoutNode:(ASCellNode *)node withConstrainedSize:(ASSizeRange)constrainedSize
 {
   CGRect frame = CGRectZero;
-  frame.size = [node layoutThatFits:constrainedSize].size;
+  if (ASSizeRangeIsExactValidLayoutSize(constrainedSize)) {
+    frame.size = constrainedSize.min;
+  } else {
+    frame.size = [node layoutThatFits:constrainedSize].size;
+  }
   node.frame = frame;
 }
 
@@ -192,7 +196,13 @@ NSString * const ASCollectionInvalidUpdateException = @"ASCollectionInvalidUpdat
   }];
 }
 
-- (NSArray<ASCellNode *> *)_layoutNodesFromContexts:(NSArray<ASIndexedNodeContext *> *)contexts
+/**
+ * This method is called duing the initial insert of the items.
+ * If the contexts have constrained sizes that are flexible, we measure each node
+ * so that we can know its size in advance. If the constraint is fixed, we skip measuring
+ * at this stage and let the node measure itself ahead when it enters the fetch range.
+ */
+- (NSArray<ASCellNode *> *)_layoutNodesAsNeededFromContexts:(NSArray<ASIndexedNodeContext *> *)contexts
 {
   ASSERT_ON_EDITING_QUEUE;
   
@@ -210,11 +220,7 @@ NSString * const ASCollectionInvalidUpdateException = @"ASCollectionInvalidUpdat
     // Allocate the node.
     ASIndexedNodeContext *context = contexts[i];
     ASCellNode *node = context.node;
-    if (node == nil) {
-      ASDisplayNodeAssertNotNil(node, @"Node block created nil node; %@, %@", self, self.dataSource);
-      node = [[ASCellNode alloc] init]; // Fallback to avoid crash for production apps.
-    }
-    
+
     [self _layoutNode:node withConstrainedSize:context.constrainedSize];
 #if AS_MEASURE_AVOIDED_DATACONTROLLER_WORK
     [ASDataController _didLayoutNode];
