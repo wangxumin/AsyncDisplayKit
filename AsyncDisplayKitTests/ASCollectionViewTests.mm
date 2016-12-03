@@ -19,6 +19,7 @@
 #import <vector>
 #import <OCMock/OCMock.h>
 #import "ASCollectionView+Undeprecated.h"
+#import <JGMethodSwizzler/JGMethodSwizzler.h>
 
 @interface ASTextCellNodeWithSetSelectedCounter : ASTextCellNode
 
@@ -59,6 +60,7 @@
 
 @property (nonatomic, assign) NSInteger sectionGeneration;
 @property (nonatomic, copy) void(^willBeginBatchFetch)(ASBatchContext *);
+@property (nonatomic, copy) ASSizeRange(^constrainedSizeForItem)(NSIndexPath *);
 
 @end
 
@@ -76,6 +78,19 @@
   }
 
   return self;
+}
+
+- (BOOL)respondsToSelector:(SEL)aSelector
+{
+  if (aSelector == @selector(collectionNode:constrainedSizeForItemAtIndexPath:)) {
+    return _constrainedSizeForItem != nil;
+  }
+  return [super respondsToSelector:aSelector];
+}
+
+- (ASSizeRange)collectionNode:(ASCollectionNode *)collectionNode constrainedSizeForItemAtIndexPath:(NSIndexPath *)indexPath
+{
+  return _constrainedSizeForItem(indexPath);
 }
 
 - (ASCellNode *)collectionView:(ASCollectionView *)collectionView nodeForItemAtIndexPath:(NSIndexPath *)indexPath {
@@ -869,7 +884,7 @@
   ASCollectionViewTestController *testController = [[ASCollectionViewTestController alloc] initWithNibName:nil bundle:nil];
   window.rootViewController = testController;
 
-  // Start with 1 item so that our content does not fill bounds.
+  // Truly empty collection – no sections
   testController.asyncDelegate->_itemCounts = {};
   [window makeKeyAndVisible];
   [window layoutIfNeeded];
@@ -889,6 +904,49 @@
     [e fulfill];
   };
   [self waitForExpectationsWithTimeout:3 handler:nil];
+}
+
+- (void)testThatFixedConstrainedSizeItemsAreLaidOutAsyncWhenTheyEnterFetchDataRange
+{
+  UIWindow *window = [[UIWindow alloc] initWithFrame:[UIScreen mainScreen].bounds];
+  ASCollectionViewTestController *testController = [[ASCollectionViewTestController alloc] initWithNibName:nil bundle:nil];
+  testController.asyncDelegate.constrainedSizeForItem = ^(NSIndexPath *indexPath) {
+    return ASSizeRangeMake(CGSizeMake(100, 100));
+  };
+  NSMutableArray<NSThread *> *layoutThreads = [NSMutableArray array];
+  NSMutableArray<ASCellNode *> *laidoutNodes = [NSMutableArray array];
+  NSLock *lock = [[NSLock alloc] init];
+  [ASTextCellNodeWithSetSelectedCounter swizzleInstanceMethod:@selector(layoutSpecThatFits:) withReplacement:JGMethodReplacementProviderBlock {
+    return JGMethodReplacement(ASLayoutSpec *, ASTextCellNodeWithSetSelectedCounter *, ASSizeRange constrainedSize) {
+      [lock lock];
+        [layoutThreads addObject:[NSThread currentThread]];
+        [laidoutNodes addObject:self];
+      [lock unlock];
+      return JGOriginalImplementation(ASLayoutSpec *, constrainedSize);
+    };
+  }];
+
+  window.rootViewController = testController;
+
+  [window makeKeyAndVisible];
+  [window layoutIfNeeded];
+
+  ASCollectionNode *cn = testController.collectionNode;
+  [cn waitUntilAllUpdatesAreCommitted];
+
+  NSMutableArray<ASCellNode *> *fetchDataNodes = [NSMutableArray array];
+  for (NSInteger s = 0; s < cn.numberOfSections; s++) {
+    NSInteger c = [cn numberOfItemsInSection:s];
+    for (NSInteger i = 0; i < c; i++) {
+      ASCellNode *node = [cn nodeForItemAtIndexPath:[NSIndexPath indexPathForItem:i inSection:s]];
+      if (node.inPreloadState) {
+        [fetchDataNodes addObject:node];
+      }
+    }
+  }
+  [self expectationForPredicate:[NSPredicate predicateWithFormat:@"self = %@", fetchDataNodes] evaluatedWithObject:laidoutNodes handler:nil];
+  [self waitForExpectationsWithTimeout:3 handler:nil];
+  [ASCellNode deswizzleAllMethods];
 }
 
 @end
