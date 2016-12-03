@@ -250,16 +250,21 @@
 
 - (void)testReloadIfNeeded
 {
-  __block ASCollectionViewTestController *testController = [[ASCollectionViewTestController alloc] initWithNibName:nil bundle:nil];
-  __block ASCollectionViewTestDelegate *del = testController.asyncDelegate;
-  __block ASCollectionNode *cn = testController.collectionNode;
+  __block UIWindow *window = nil;
+  __block ASCollectionViewTestController *testController = nil;
+  __block ASCollectionViewTestDelegate *del = nil;
+  __block ASCollectionNode *cn = nil;
 
   void (^reset)() = ^void() {
+    window = [[UIWindow alloc] initWithFrame:[UIScreen mainScreen].bounds];
     testController = [[ASCollectionViewTestController alloc] initWithNibName:nil bundle:nil];
     del = testController.asyncDelegate;
     cn = testController.collectionNode;
+    window.rootViewController = testController;
+    [window makeKeyAndVisible];
   };
 
+  reset();
   // Check if the number of sections matches the data source
   XCTAssertEqual(cn.numberOfSections, del->_itemCounts.size(), @"Section count doesn't match the data source");
 
