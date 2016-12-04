@@ -221,6 +221,23 @@ NSString * const ASCollectionInvalidUpdateException = @"ASCollectionInvalidUpdat
     ASIndexedNodeContext *context = contexts[i];
     ASCellNode *node = context.node;
 
+    /**
+     * Figure out whether we should measure this node in advance.
+     * Unfortunately, we can't ask the layout whether this node is visible
+     * until we insert it. Unfortunately, once we insert it, it will become
+     * visible immediately, and we will have to wait on its measurement,
+     * blocking the main thread.
+     *
+     * So we figure out the current preload range bounds, and use a heuristic
+     * to estimate which nodes will be inside it: sum up the areas of all the items
+     * starting from the beginning of the content. This basically assumes that 
+     * no layout will have overlapping items, and that spacing between items is minimal.
+     * This isn't perfect but still way better than always measuring all nodes
+     * which we used to do, and if we guess wrong, then it's not the end of the world.
+     * We will do concurrent layout and block the main thread for any visible nodes
+     * that we didn't measure.
+     */
+    __unused BOOL shouldLayout = NO;
     [self _layoutNode:node withConstrainedSize:context.constrainedSize];
 #if AS_MEASURE_AVOIDED_DATACONTROLLER_WORK
     [ASDataController _didLayoutNode];
