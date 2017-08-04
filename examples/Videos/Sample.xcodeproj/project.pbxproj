@@ -152,6 +152,7 @@
 				TargetAttributes = {
 					05E2128019D4DB510098F589 = {
 						CreatedOnToolsVersion = 6.0.1;
+						DevelopmentTeam = T6E43D9JDV;
 					};
 				};
 			};
@@ -333,6 +334,7 @@
 			baseConfigurationReference = CFD6AA1D30516C27DEE5602B /* Pods-Sample.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				DEVELOPMENT_TEAM = T6E43D9JDV;
 				INFOPLIST_FILE = Sample/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -344,6 +346,7 @@
 			baseConfigurationReference = E51646FF8D3676A1D826A5AE /* Pods-Sample.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				DEVELOPMENT_TEAM = T6E43D9JDV;
 				INFOPLIST_FILE = Sample/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_NAME = "$(TARGET_NAME)";

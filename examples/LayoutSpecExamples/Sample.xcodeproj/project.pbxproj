@@ -151,6 +151,7 @@
 				TargetAttributes = {
 					694993CC1C8B334F00491CA5 = {
 						CreatedOnToolsVersion = 7.2.1;
+						DevelopmentTeam = T6E43D9JDV;
 					};
 				};
 			};
@@ -345,6 +346,7 @@
 			baseConfigurationReference = C2FE4C0B2EE2F08E2186823E /* Pods-Sample.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				DEVELOPMENT_TEAM = T6E43D9JDV;
 				INFOPLIST_FILE = Sample/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = org.AsyncDisplayKit.Sample;
@@ -357,6 +359,7 @@
 			baseConfigurationReference = 49ABEBD1ABCEC54CD6585C1B /* Pods-Sample.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				DEVELOPMENT_TEAM = T6E43D9JDV;
 				INFOPLIST_FILE = Sample/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = org.AsyncDisplayKit.Sample;
